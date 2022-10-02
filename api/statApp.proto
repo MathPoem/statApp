@@ -1,0 +1,24 @@
+// This service provide statistic info about changing currency
+// gRPC & REST
+
+syntax = "proto3";
+package statApp;
+option go_package = "github.com/MathPoem/statApp/pkg";
+
+import "google/api/annotations.proto";
+
+message RequestDayPriceAvg {
+  string date = 1;
+}
+
+message ResponseDayPriceAvg{
+  double dayPriceAvg = 1;
+}
+
+service StatAppService {
+  rpc DayPriceAvg(RequestDayPriceAvg) returns(ResponseDayPriceAvg) {
+    option(google.api.http) = {
+      get: "/stat/dayPriceAvg/{date}"
+    };
+  }
+}

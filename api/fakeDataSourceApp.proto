@@ -1,0 +1,31 @@
+// This service provide data for statApp
+// gRPC only
+
+syntax = "proto3";
+package fakeDataSourceApp;
+option go_package = "github.com/MathPoem/statApp/pkg";
+
+message Transaction {
+  string time = 1;
+  double gasPrice = 2;
+  double gasValue = 3;
+  double average = 4;
+  double maxGasPrice = 5;
+  double medianGasPrice = 6;
+}
+
+message ResponseCurrencyInfo {
+  message Transactions {
+    repeated Transaction transactions = 1;
+  }
+  Transactions ethereum = 1;
+}
+
+message RequestCurrencyInfo {
+  string name = 1;
+}
+
+service fakeDataSourceAppService {
+    rpc GetData(RequestCurrencyInfo) returns(ResponseCurrencyInfo) {}
+}
+

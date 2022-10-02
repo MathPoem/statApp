@@ -1,0 +1,95 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "api/fakeDataSourceApp.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "fakeDataSourceAppService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "ResponseCurrencyInfoTransactions": {
+      "type": "object",
+      "properties": {
+        "transactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/fakeDataSourceAppTransaction"
+          }
+        }
+      }
+    },
+    "fakeDataSourceAppResponseCurrencyInfo": {
+      "type": "object",
+      "properties": {
+        "ethereum": {
+          "$ref": "#/definitions/ResponseCurrencyInfoTransactions"
+        }
+      }
+    },
+    "fakeDataSourceAppTransaction": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "type": "string"
+        },
+        "gasPrice": {
+          "type": "number",
+          "format": "double"
+        },
+        "gasValue": {
+          "type": "number",
+          "format": "double"
+        },
+        "average": {
+          "type": "number",
+          "format": "double"
+        },
+        "maxGasPrice": {
+          "type": "number",
+          "format": "double"
+        },
+        "medianGasPrice": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}
