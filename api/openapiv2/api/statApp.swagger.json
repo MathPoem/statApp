@@ -16,14 +16,14 @@
     "application/json"
   ],
   "paths": {
-    "/stat/dayPriceAvg/{date}": {
+    "/stat/dayPriceAvg": {
       "get": {
-        "operationId": "StatAppService_DayPriceAvg",
+        "operationId": "StatAppService_GetStat",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/statAppResponseDayPriceAvg"
+              "$ref": "#/definitions/statAppResponseStat"
             }
           },
           "default": {
@@ -33,14 +33,6 @@
             }
           }
         },
-        "parameters": [
-          {
-            "name": "date",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
         "tags": [
           "StatAppService"
         ]
@@ -48,6 +40,18 @@
     }
   },
   "definitions": {
+    "HourDistributionTimeStat": {
+      "type": "object",
+      "properties": {
+        "price": {
+          "type": "string"
+        },
+        "count": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -75,10 +79,66 @@
         }
       }
     },
-    "statAppResponseDayPriceAvg": {
+    "statAppGasAvg": {
       "type": "object",
       "properties": {
+        "time": {
+          "type": "string"
+        },
+        "gasPriceAvg": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "statAppHourDistribution": {
+      "type": "object",
+      "properties": {
+        "hour": {
+          "type": "string"
+        },
+        "statistic": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/HourDistributionTimeStat"
+          }
+        }
+      }
+    },
+    "statAppResponseStat": {
+      "type": "object",
+      "properties": {
+        "sum": {
+          "type": "number",
+          "format": "double"
+        },
+        "sumMonths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/statAppSumMonth"
+          }
+        },
         "dayPriceAvg": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/statAppGasAvg"
+          }
+        },
+        "distribution": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/statAppHourDistribution"
+          }
+        }
+      }
+    },
+    "statAppSumMonth": {
+      "type": "object",
+      "properties": {
+        "month": {
+          "type": "string"
+        },
+        "sumGas": {
           "type": "number",
           "format": "double"
         }

@@ -1,24 +1,44 @@
 // This service provide statistic info about changing currency
-// gRPC & REST
+// gRPC && REST
 
 syntax = "proto3";
 package statApp;
 option go_package = "github.com/MathPoem/statApp/pkg";
 
 import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
 
-message RequestDayPriceAvg {
-  string date = 1;
+message SumMonth {
+  string month = 1;
+  double sumGas = 2;
 }
 
-message ResponseDayPriceAvg{
-  double dayPriceAvg = 1;
+message GasAvg {
+  string time = 1;
+  double gasPriceAvg = 2;
 }
+
+message HourDistribution {
+  message TimeStat {
+    string price= 1;
+    int32 count = 2;
+  }
+  string hour = 1;
+  repeated TimeStat statistic = 2;
+}
+
+message ResponseStat {
+  double sum = 1;
+  repeated SumMonth sumMonths = 2;
+  repeated GasAvg dayPriceAvg = 3;
+  repeated HourDistribution distribution = 4;
+}
+
 
 service StatAppService {
-  rpc DayPriceAvg(RequestDayPriceAvg) returns(ResponseDayPriceAvg) {
+  rpc GetStat(google.protobuf.Empty) returns(ResponseStat) {
     option(google.api.http) = {
-      get: "/stat/dayPriceAvg/{date}"
+      get: "/stat/dayPriceAvg"
     };
   }
 }

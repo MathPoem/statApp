@@ -4,56 +4,68 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	api "github.com/statApp/pkg/api"
-	statistic "github.com/statApp/pkg/statistic"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	fakeService "github.com/statApp/fakeDataSourceApp/cmd"
+	pkg "github.com/statApp/pkg/api"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
-	time2 "time"
+	"net/http"
+	"path"
+	"strings"
 )
 
 var (
-	port = flag.Int("port", 50050, "the server port")
-	addr = flag.String("addr", "localhost:50051", "the address to connect to")
+	grpcPort        = flag.Int("grpc-port", 50050, "port for gRPC server to listen on")
+	httpPort        = flag.Int("http-port", 50040, "port for HTTP server to listen on")
+	swaggerSpecPath = flag.String("swagger-spec", "./api/openapiv2/api/statApp.swagger.json", "path to Swagger spec file")
+	staticFilesPath = flag.String("static-files", "./static/web", "path to static files")
 )
 
-type server struct {
-	api.UnimplementedStatAppServiceServer
+func registerGatewayEndpoints() (http.Handler, error) {
+	h := runtime.NewServeMux()
+	opts := []grpc.DialOption{grpc.WithInsecure()}
+	if err := pkg.RegisterStatAppServiceHandlerFromEndpoint(context.Background(), h, fmt.Sprintf(":%d", *grpcPort), opts); err != nil {
+		return nil, fmt.Errorf("couldn't register HTTP handler: %w", err)
+	}
+	return h, nil
 }
 
-func (s *server) DayPriceAvg(ctx context.Context, date *api.RequestDayPriceAvg) (*api.ResponseDayPriceAvg, error) {
+func startHTTPServer() {
+	mux := http.NewServeMux()
 
-	flag.Parse()
-	conn, err := grpc.Dial(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	mux.HandleFunc("/swagger.json", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, *swaggerSpecPath)
+	})
+	mux.HandleFunc("/swagger-ui/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, path.Join(*staticFilesPath, "index.html"))
+	})
+	mux.HandleFunc("/static/", func(w http.ResponseWriter, r *http.Request) {
+		p := strings.TrimPrefix(r.URL.Path, "/static")
+		p = path.Join(*staticFilesPath, p)
+		http.ServeFile(w, r, p)
+	})
+
+	gw, err := registerGatewayEndpoints()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("couldn't register gateway endpoints: %v", err)
 	}
-	defer conn.Close()
 
-	c := api.NewFakeDataSourceAppServiceClient(conn)
+	mux.Handle("/", gw)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time2.Second)
-	defer cancel()
-
-	r, err := c.GetData(ctx, &api.RequestCurrencyInfo{Name: "ethereum"})
-	if err != nil {
-		log.Println(err)
-		return nil, err
+	if err := http.ListenAndServe(fmt.Sprintf(":%d", *httpPort), mux); err != nil {
+		log.Fatalf("HTTP server stopped with error: %v", err)
 	}
-	avg := statistic.PriceAvg(r, date.GetDate())
-	return &api.ResponseDayPriceAvg{DayPriceAvg: avg}, nil
 }
 
 func startGrpcServer() {
-	flag.Parse()
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *grpcPort))
 	if err != nil {
 		log.Fatal(err)
 	}
 	s := grpc.NewServer()
-	api.RegisterStatAppServiceServer(s, &server{})
+	pkg.RegisterStatAppServiceServer(s, &pkg.Server{})
 	reflection.Register(s)
 	log.Print("start stat server")
 	if err = s.Serve(lis); err != nil {
@@ -62,5 +74,9 @@ func startGrpcServer() {
 }
 
 func main() {
+	flag.Parse()
+
+	go fakeService.StartFakeDataSource()
+	go startHTTPServer()
 	startGrpcServer()
 }

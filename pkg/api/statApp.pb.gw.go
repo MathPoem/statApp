@@ -6,7 +6,7 @@ Package pkg is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package api
+package pkg
 
 import (
 	"context"
@@ -21,6 +21,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 // Suppress "imported and not used" errors
@@ -31,54 +32,20 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
-func request_StatAppService_DayPriceAvg_0(ctx context.Context, marshaler runtime.Marshaler, client StatAppServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq RequestDayPriceAvg
+func request_StatAppService_GetStat_0(ctx context.Context, marshaler runtime.Marshaler, client StatAppServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq emptypb.Empty
 	var metadata runtime.ServerMetadata
 
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["date"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "date")
-	}
-
-	protoReq.Date, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "date", err)
-	}
-
-	msg, err := client.DayPriceAvg(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetStat(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_StatAppService_DayPriceAvg_0(ctx context.Context, marshaler runtime.Marshaler, server StatAppServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq RequestDayPriceAvg
+func local_request_StatAppService_GetStat_0(ctx context.Context, marshaler runtime.Marshaler, server StatAppServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq emptypb.Empty
 	var metadata runtime.ServerMetadata
 
-	var (
-		val string
-		ok  bool
-		err error
-		_   = err
-	)
-
-	val, ok = pathParams["date"]
-	if !ok {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "date")
-	}
-
-	protoReq.Date, err = runtime.String(val)
-	if err != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "date", err)
-	}
-
-	msg, err := server.DayPriceAvg(ctx, &protoReq)
+	msg, err := server.GetStat(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -89,19 +56,19 @@ func local_request_StatAppService_DayPriceAvg_0(ctx context.Context, marshaler r
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterStatAppServiceHandlerFromEndpoint instead.
 func RegisterStatAppServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server StatAppServiceServer) error {
 
-	mux.Handle("GET", pattern_StatAppService_DayPriceAvg_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_StatAppService_GetStat_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/statApp.StatAppService/DayPriceAvg", runtime.WithHTTPPathPattern("/stat/dayPriceAvg/{date}"))
+		ctx, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/statApp.StatAppService/GetStat", runtime.WithHTTPPathPattern("/stat/dayPriceAvg"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_StatAppService_DayPriceAvg_0(ctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_StatAppService_GetStat_0(ctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -109,7 +76,7 @@ func RegisterStatAppServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 			return
 		}
 
-		forward_StatAppService_DayPriceAvg_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StatAppService_GetStat_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -154,24 +121,24 @@ func RegisterStatAppServiceHandler(ctx context.Context, mux *runtime.ServeMux, c
 // "StatAppServiceClient" to call the correct interceptors.
 func RegisterStatAppServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client StatAppServiceClient) error {
 
-	mux.Handle("GET", pattern_StatAppService_DayPriceAvg_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("GET", pattern_StatAppService_GetStat_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
-		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/statApp.StatAppService/DayPriceAvg", runtime.WithHTTPPathPattern("/stat/dayPriceAvg/{date}"))
+		ctx, err = runtime.AnnotateContext(ctx, mux, req, "/statApp.StatAppService/GetStat", runtime.WithHTTPPathPattern("/stat/dayPriceAvg"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_StatAppService_DayPriceAvg_0(ctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_StatAppService_GetStat_0(ctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_StatAppService_DayPriceAvg_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_StatAppService_GetStat_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -179,9 +146,9 @@ func RegisterStatAppServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 }
 
 var (
-	pattern_StatAppService_DayPriceAvg_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"stat", "dayPriceAvg", "date"}, ""))
+	pattern_StatAppService_GetStat_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"stat", "dayPriceAvg"}, ""))
 )
 
 var (
-	forward_StatAppService_DayPriceAvg_0 = runtime.ForwardResponseMessage
+	forward_StatAppService_GetStat_0 = runtime.ForwardResponseMessage
 )

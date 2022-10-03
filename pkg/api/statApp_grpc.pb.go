@@ -4,13 +4,14 @@
 // - protoc             (unknown)
 // source: api/statApp.proto
 
-package api
+package pkg
 
 import (
 	context "context"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -22,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type StatAppServiceClient interface {
-	DayPriceAvg(ctx context.Context, in *RequestDayPriceAvg, opts ...grpc.CallOption) (*ResponseDayPriceAvg, error)
+	GetStat(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ResponseStat, error)
 }
 
 type statAppServiceClient struct {
@@ -33,9 +34,9 @@ func NewStatAppServiceClient(cc grpc.ClientConnInterface) StatAppServiceClient {
 	return &statAppServiceClient{cc}
 }
 
-func (c *statAppServiceClient) DayPriceAvg(ctx context.Context, in *RequestDayPriceAvg, opts ...grpc.CallOption) (*ResponseDayPriceAvg, error) {
-	out := new(ResponseDayPriceAvg)
-	err := c.cc.Invoke(ctx, "/statApp.StatAppService/DayPriceAvg", in, out, opts...)
+func (c *statAppServiceClient) GetStat(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ResponseStat, error) {
+	out := new(ResponseStat)
+	err := c.cc.Invoke(ctx, "/statApp.StatAppService/GetStat", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +47,7 @@ func (c *statAppServiceClient) DayPriceAvg(ctx context.Context, in *RequestDayPr
 // All implementations must embed UnimplementedStatAppServiceServer
 // for forward compatibility
 type StatAppServiceServer interface {
-	DayPriceAvg(context.Context, *RequestDayPriceAvg) (*ResponseDayPriceAvg, error)
+	GetStat(context.Context, *emptypb.Empty) (*ResponseStat, error)
 	mustEmbedUnimplementedStatAppServiceServer()
 }
 
@@ -54,8 +55,8 @@ type StatAppServiceServer interface {
 type UnimplementedStatAppServiceServer struct {
 }
 
-func (UnimplementedStatAppServiceServer) DayPriceAvg(context.Context, *RequestDayPriceAvg) (*ResponseDayPriceAvg, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DayPriceAvg not implemented")
+func (UnimplementedStatAppServiceServer) GetStat(context.Context, *emptypb.Empty) (*ResponseStat, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStat not implemented")
 }
 func (UnimplementedStatAppServiceServer) mustEmbedUnimplementedStatAppServiceServer() {}
 
@@ -70,20 +71,20 @@ func RegisterStatAppServiceServer(s grpc.ServiceRegistrar, srv StatAppServiceSer
 	s.RegisterService(&StatAppService_ServiceDesc, srv)
 }
 
-func _StatAppService_DayPriceAvg_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RequestDayPriceAvg)
+func _StatAppService_GetStat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StatAppServiceServer).DayPriceAvg(ctx, in)
+		return srv.(StatAppServiceServer).GetStat(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/statApp.StatAppService/DayPriceAvg",
+		FullMethod: "/statApp.StatAppService/GetStat",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StatAppServiceServer).DayPriceAvg(ctx, req.(*RequestDayPriceAvg))
+		return srv.(StatAppServiceServer).GetStat(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -96,8 +97,8 @@ var StatAppService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*StatAppServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "DayPriceAvg",
-			Handler:    _StatAppService_DayPriceAvg_Handler,
+			MethodName: "GetStat",
+			Handler:    _StatAppService_GetStat_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

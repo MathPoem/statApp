@@ -5,6 +5,8 @@ syntax = "proto3";
 package fakeDataSourceApp;
 option go_package = "github.com/MathPoem/statApp/pkg";
 
+import "google/protobuf/empty.proto";
+
 message Transaction {
   string time = 1;
   double gasPrice = 2;
@@ -21,11 +23,7 @@ message ResponseCurrencyInfo {
   Transactions ethereum = 1;
 }
 
-message RequestCurrencyInfo {
-  string name = 1;
-}
-
 service fakeDataSourceAppService {
-    rpc GetData(RequestCurrencyInfo) returns(ResponseCurrencyInfo) {}
+    rpc GetData(google.protobuf.Empty) returns(ResponseCurrencyInfo) {}
 }
 

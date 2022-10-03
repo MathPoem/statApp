@@ -4,13 +4,14 @@
 // - protoc             (unknown)
 // source: api/fakeDataSourceApp.proto
 
-package api
+package pkg
 
 import (
 	context "context"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -22,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type FakeDataSourceAppServiceClient interface {
-	GetData(ctx context.Context, in *RequestCurrencyInfo, opts ...grpc.CallOption) (*ResponseCurrencyInfo, error)
+	GetData(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ResponseCurrencyInfo, error)
 }
 
 type fakeDataSourceAppServiceClient struct {
@@ -33,7 +34,7 @@ func NewFakeDataSourceAppServiceClient(cc grpc.ClientConnInterface) FakeDataSour
 	return &fakeDataSourceAppServiceClient{cc}
 }
 
-func (c *fakeDataSourceAppServiceClient) GetData(ctx context.Context, in *RequestCurrencyInfo, opts ...grpc.CallOption) (*ResponseCurrencyInfo, error) {
+func (c *fakeDataSourceAppServiceClient) GetData(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ResponseCurrencyInfo, error) {
 	out := new(ResponseCurrencyInfo)
 	err := c.cc.Invoke(ctx, "/fakeDataSourceApp.fakeDataSourceAppService/GetData", in, out, opts...)
 	if err != nil {
@@ -46,7 +47,7 @@ func (c *fakeDataSourceAppServiceClient) GetData(ctx context.Context, in *Reques
 // All implementations must embed UnimplementedFakeDataSourceAppServiceServer
 // for forward compatibility
 type FakeDataSourceAppServiceServer interface {
-	GetData(context.Context, *RequestCurrencyInfo) (*ResponseCurrencyInfo, error)
+	GetData(context.Context, *emptypb.Empty) (*ResponseCurrencyInfo, error)
 	mustEmbedUnimplementedFakeDataSourceAppServiceServer()
 }
 
@@ -54,7 +55,7 @@ type FakeDataSourceAppServiceServer interface {
 type UnimplementedFakeDataSourceAppServiceServer struct {
 }
 
-func (UnimplementedFakeDataSourceAppServiceServer) GetData(context.Context, *RequestCurrencyInfo) (*ResponseCurrencyInfo, error) {
+func (UnimplementedFakeDataSourceAppServiceServer) GetData(context.Context, *emptypb.Empty) (*ResponseCurrencyInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetData not implemented")
 }
 func (UnimplementedFakeDataSourceAppServiceServer) mustEmbedUnimplementedFakeDataSourceAppServiceServer() {
@@ -72,7 +73,7 @@ func RegisterFakeDataSourceAppServiceServer(s grpc.ServiceRegistrar, srv FakeDat
 }
 
 func _FakeDataSourceAppService_GetData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RequestCurrencyInfo)
+	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -84,7 +85,7 @@ func _FakeDataSourceAppService_GetData_Handler(srv interface{}, ctx context.Cont
 		FullMethod: "/fakeDataSourceApp.fakeDataSourceAppService/GetData",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(FakeDataSourceAppServiceServer).GetData(ctx, req.(*RequestCurrencyInfo))
+		return srv.(FakeDataSourceAppServiceServer).GetData(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }

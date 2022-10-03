@@ -1,11 +1,11 @@
-package main
+package fakeService
 
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"flag"
 	"fmt"
+	"github.com/golang/protobuf/ptypes/empty"
 	api "github.com/statApp/pkg/api"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -27,31 +27,28 @@ type server struct {
 	api.UnimplementedFakeDataSourceAppServiceServer
 }
 
-func (s *server) GetData(ctx context.Context, name *api.RequestCurrencyInfo) (*api.ResponseCurrencyInfo, error) {
-	if name.Name == "ethereum" {
-		file, err := os.Open(dataPath)
-		defer file.Close()
+func (s *server) GetData(ctx context.Context, empty *empty.Empty) (*api.ResponseCurrencyInfo, error) {
+	file, err := os.Open(dataPath)
+	defer file.Close()
 
-		if err != nil {
-			return nil, err
-		}
-
-		dataBytes, err := ioutil.ReadAll(file)
-
-		var data api.ResponseCurrencyInfo
-
-		err = json.Unmarshal(dataBytes, &data)
-
-		if err != nil {
-			return nil, err
-		}
-
-		return &data, nil
+	if err != nil {
+		return nil, err
 	}
-	return nil, errors.New("incorrect currency name")
+
+	dataBytes, err := ioutil.ReadAll(file)
+
+	var data api.ResponseCurrencyInfo
+
+	err = json.Unmarshal(dataBytes, &data)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &data, nil
 }
 
-func main() {
+func StartFakeDataSource() {
 	flag.Parse()
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
 	if err != nil {

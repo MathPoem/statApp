@@ -8,3 +8,8 @@ type Transaction struct {
 	MaxGasPrice    float64 `json:"maxGasPrice"`
 	MedianGasPrice float64 `json:"medianGasPrice"`
 }
+
+type DayStat struct {
+	Time string  `json:"time"`
+	Avg  float64 `json:"avg"`
+}
