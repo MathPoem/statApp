@@ -7,7 +7,7 @@
 // 	protoc        (unknown)
 // source: api/fakeDataSourceApp.proto
 
-package pkg
+package api
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"

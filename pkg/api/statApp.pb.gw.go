@@ -6,7 +6,7 @@ Package pkg is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package pkg
+package api
 
 import (
 	"context"

@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: api/fakeDataSourceApp.proto
 
-package pkg
+package api
 
 import (
 	context "context"

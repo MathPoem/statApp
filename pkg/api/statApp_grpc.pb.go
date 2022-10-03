@@ -4,7 +4,7 @@
 // - protoc             (unknown)
 // source: api/statApp.proto
 
-package pkg
+package api
 
 import (
 	context "context"

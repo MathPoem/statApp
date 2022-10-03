@@ -7,7 +7,7 @@
 // 	protoc        (unknown)
 // source: api/statApp.proto
 
-package pkg
+package api
 
 import (
 	_ "google.golang.org/genproto/googleapis/api/annotations"

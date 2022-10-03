@@ -4,25 +4,30 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"flag"
 	"fmt"
-	pkg "github.com/statApp/pkg/api"
+	api "github.com/statApp/pkg/api"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"io/ioutil"
 	"log"
 	"net"
 	"os"
 )
 
+var (
+	port = flag.Int("port", 50051, "the server port")
+)
+
 const (
-	dataPath = "github.com/MathPoem/statApp/fakeDataSourceApp/gas_price.json"
-	port     = ":50500"
+	dataPath = "./fakeDataSourceApp/gas_price.json"
 )
 
 type server struct {
-	pkg.UnimplementedFakeDataSourceAppServiceServer
+	api.UnimplementedFakeDataSourceAppServiceServer
 }
 
-func (s *server) GetData(ctx context.Context, name *pkg.RequestCurrencyInfo) (*pkg.ResponseCurrencyInfo, error) {
+func (s *server) GetData(ctx context.Context, name *api.RequestCurrencyInfo) (*api.ResponseCurrencyInfo, error) {
 	if name.Name == "ethereum" {
 		file, err := os.Open(dataPath)
 		defer file.Close()
@@ -33,7 +38,7 @@ func (s *server) GetData(ctx context.Context, name *pkg.RequestCurrencyInfo) (*p
 
 		dataBytes, err := ioutil.ReadAll(file)
 
-		var data pkg.ResponseCurrencyInfo
+		var data api.ResponseCurrencyInfo
 
 		err = json.Unmarshal(dataBytes, &data)
 
@@ -47,13 +52,15 @@ func (s *server) GetData(ctx context.Context, name *pkg.RequestCurrencyInfo) (*p
 }
 
 func main() {
-	lis, err := net.Listen("tcp", port)
+	flag.Parse()
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
 	if err != nil {
 		log.Fatal(err)
 	}
 	s := grpc.NewServer()
-	pkg.RegisterFakeDataSourceAppServiceServer(s, &server{})
-	fmt.Println("start fake server")
+	api.RegisterFakeDataSourceAppServiceServer(s, &server{})
+	reflection.Register(s)
+	log.Print("start fake server")
 	if err := s.Serve(lis); err != nil {
 		log.Fatal(err)
 	}
