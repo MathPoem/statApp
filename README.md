@@ -26,7 +26,7 @@ The wrapper provides access to [rusprofile.ru](https://www.rusprofile.ru/) data 
 To run Docker container, execute the following:
 
 ```shell
-docker run -it -p 8080:8080 -p 8888:8888 --rm iskorotkov/rusprofile-grpc:v1.0.1
+make build-run-image
 ```
 
 ## Test
@@ -36,7 +36,7 @@ docker run -it -p 8080:8080 -p 8888:8888 --rm iskorotkov/rusprofile-grpc:v1.0.1
 Use `grpcurl` (`curl` for gRPC) to test gRPC API:
 
 ```shell
-grpcurl -plaintext -d localhost:50050 statApp.StatAppService/GetStat
+grpcurl -plaintext localhost:50050 statApp.StatAppService/GetStat
 ```
 
 ### HTTP

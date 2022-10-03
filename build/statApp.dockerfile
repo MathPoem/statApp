@@ -18,4 +18,5 @@ FROM base as run
 COPY --from=builder /go/bin/statApp /app
 COPY --from=builder /go/src/app/api/openapiv2 /api/openapiv2
 COPY --from=builder /go/src/app/static /static
+COPY --from=builder /go/src/app/fakeDataSourceApp /fakeDataSourceApp
 ENTRYPOINT ["./app"]
