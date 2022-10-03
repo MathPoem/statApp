@@ -1,3 +1,5 @@
+### @@@MathPoem
+
 Необходимо посчитать:
 1) Сколько было потрачено gas помесячно.
 2) Среднюю цену gas за день.
@@ -9,17 +11,24 @@
 2) Сервис должен вернуть все значения в виде json файла.
 3) Данные должны быть посчитаны максимально быстро.
 
-# gRPC wrapper for rusprofile.ru
+## statistic service 
 
-The wrapper provides access to [rusprofile.ru](https://www.rusprofile.ru/) data via gRPC. HTTP API is available via HTTP-to-gRPC gateway.
-
-- [gRPC wrapper for rusprofile.ru](#grpc-wrapper-for-rusprofileru)
-    - [Run](#run)
-    - [Test](#test)
-        - [gRPC](#grpc)
-        - [HTTP](#http)
-        - [Browser](#browser)
-    - [Project structure](#project-structure)
+    Сервис, проводящий статистический анализ на основе информации о транзакциях
+    для имитации удаленного доступа к данныс реализован сервис (fakeDataSource), 
+    отдающий масив нужных данных по gRPC основному сервису (statApp)
+    для доступа к основному сервису реализован доступ по gRPC, а также rest api
+    с помощью gRPC gateway
+    
+    для компиляции .proto файлов использован buf
+    описание endpoint, а также описание выходных данных доступно в панели swagger
+    swagger документация сгенерирована автоматически с помощью openapiv2
+    
+    все приложение обернуто в docker образ
+    
+    главная функция, вычисляющая все статистические показатели работает за время O(n)
+    т.к. все значения вычисляются за один проход по массиву,
+    в котором выполняется ограниченное количество действий
+    
 
 ## Run
 
